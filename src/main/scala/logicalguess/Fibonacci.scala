@@ -1,12 +1,12 @@
 package logicalguess
 
-import scalaz.zio._
+import zio._
 
 object Fibonacci {
 
   def fib(n: Int): IO[Nothing, Int] =
     if (n <= 1)
-      IO.point(1)
+      IO.succeed(1)
     else
       for {
         f1 <- fib(n - 2).fork
