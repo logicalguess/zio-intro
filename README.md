@@ -2,7 +2,7 @@ ZIO Introduction
 
 Credits:
 
-https://github.com/MarekDudek/zio-tutorial
+https://zio.dev/docs/datatypes/datatypes_index
 
 https://github.com/jdegoes/zio-workshop
 
