@@ -1,4 +1,4 @@
-package logicalguess
+package logicalguess.zio
 
 import java.io.IOException
 

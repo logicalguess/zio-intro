@@ -1,8 +1,9 @@
-package logicalguess
+package logicalguess.zio
 
-import zio._
+import zio.console.Console
+import zio.{App, ZIO}
 
-case class LogicRunner[E <: Throwable, A](val logic: IO[E, A]) extends App {
+case class LogicRunner[E <: Throwable, A](val logic: ZIO[Console, E, A]) extends App {
 
   override def run(args: List[String]): ZIO[Environment, Nothing, Int] = {
 

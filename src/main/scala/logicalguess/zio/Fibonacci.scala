@@ -1,6 +1,6 @@
-package logicalguess
+package logicalguess.zio
 
-import zio._
+import zio.IO
 
 object Fibonacci {
 

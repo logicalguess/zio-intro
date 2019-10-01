@@ -1,9 +1,9 @@
-package logicalguess
+package logicalguess.zio
 
 import java.io.IOException
 
-import zio.console._
-import zio.{App, ZIO, IO}
+import zio.console.{getStrLn, putStrLn}
+import zio.{App, ZIO}
 
 object HelloApp extends App {
 
