@@ -41,12 +41,13 @@ object Candy extends App {
         }
 
     val getInput : ZIO[Console, IOException, Input] = for {
-        line <- putStrLn(s"Please enter an input from 'c', 't', or 'x'") *> getStrLn
+        line <- putStrLn(s"Please enter an input from: 'c', 't', or 'x'") *> getStrLn
         char <- line.toLowerCase.trim.headOption match {
             case None => putStrLn(s"You did not enter a character") *> getInput
             case Some('c') => UIO.succeed(Coin)
             case Some('t') => UIO.succeed(Turn)
             case Some('x') => UIO.succeed(Exit)
+            case _ => putStrLn(s"Input not recognized. Valid inputs are: 'c', 't', or 'x'") *> getInput
         }
     } yield char
 
