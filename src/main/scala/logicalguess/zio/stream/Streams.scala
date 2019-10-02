@@ -1,5 +1,6 @@
-package logicalguess.zio
+package logicalguess.zio.stream
 
+import logicalguess.zio.util.LogicRunner
 import zio.UIO
 import zio.stream.{Sink, Stream}
 

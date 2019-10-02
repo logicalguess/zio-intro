@@ -1,5 +1,7 @@
-package logicalguess.zio
+package logicalguess.zio.fiber
 
+import logicalguess.zio.util
+import logicalguess.zio.util.LogicRunner
 import zio.IO
 
 object Fibonacci {
@@ -17,6 +19,6 @@ object Fibonacci {
 
   def main(args: Array[String]): Unit = {
     val logic = fib(5)
-    LogicRunner(logic).main(Array.empty)
+    util.LogicRunner(logic).main(Array.empty)
   }
 }

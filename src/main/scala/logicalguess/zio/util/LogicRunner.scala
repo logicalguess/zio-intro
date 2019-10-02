@@ -1,4 +1,4 @@
-package logicalguess.zio
+package logicalguess.zio.util
 
 import zio.console.Console
 import zio.{App, ZIO}

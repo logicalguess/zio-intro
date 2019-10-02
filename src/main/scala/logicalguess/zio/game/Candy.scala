@@ -1,8 +1,8 @@
-package logicalguess.zio
+package logicalguess.zio.game
 
 import java.io.IOException
 
-import zio.console.{Console, getStrLn, putStrLn}
+import zio.console.{Console, putStrLn}
 import zio.{App, IO, UIO, ZIO}
 
 object Candy extends App {
