@@ -2,7 +2,7 @@ package logicalguess.zio.game
 
 import java.io.IOException
 
-import zio.console.{Console, putStrLn}
+import zio.console.{Console, putStrLn, getStrLn}
 import zio.{App, IO, UIO, ZIO}
 
 object Candy extends App {
