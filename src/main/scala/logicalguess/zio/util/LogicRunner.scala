@@ -3,7 +3,7 @@ package logicalguess.zio.util
 import zio.console.Console
 import zio.{App, ZIO}
 
-case class LogicRunner[E <: Throwable, A](val logic: ZIO[Console, E, A]) extends App {
+case class LogicRunner[E <: Throwable, A](logic: ZIO[Console, E, A]) extends App {
 
   override def run(args: List[String]): ZIO[Environment, Nothing, Int] = {
 
