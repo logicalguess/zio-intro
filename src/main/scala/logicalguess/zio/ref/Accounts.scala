@@ -1,6 +1,5 @@
 package logicalguess.zio.ref
 
-import logicalguess.zio.util
 import logicalguess.zio.util.LogicRunner
 import zio.{IO, Ref}
 
@@ -27,6 +26,6 @@ object Accounts {
   } yield v
 
   def main(args: Array[String]): Unit = {
-    util.LogicRunner(logic).main(Array.empty)
+    LogicRunner(logic).main(Array.empty)
   }
 }
