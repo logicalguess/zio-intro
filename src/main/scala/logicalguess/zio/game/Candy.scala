@@ -22,12 +22,12 @@ object Candy extends App {
 
     def run(args: List[String]) : ZIO[Environment, Nothing, Int] = {
         (for {
-            _ <- candy
+            _ <- program
         } yield ())
           .fold(_ => 1, _ => 0)
     }
 
-    val candy : ZIO[Console, IOException, Unit] = for {
+    val program : ZIO[Console, IOException, Unit] = for {
         _ <- putStrLn(s"Let's start!")
         state = State(true, 5, 10)
         _ <- renderState(state)
