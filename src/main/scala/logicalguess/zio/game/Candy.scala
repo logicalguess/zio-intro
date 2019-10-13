@@ -58,8 +58,12 @@ object Candy extends App {
         }
     } yield char
 
+    def recordEvent(event: Event) : ZIO[Console, IOException, Unit] = {
+        putStrLn("EVENT -> " + event)
+    }
+
     def renderState(state: State) : ZIO[Console, IOException, Unit] = {
-        putStrLn(state.toString)
+        putStrLn("STATE -> " + state)
     }
 
     def evaluate(in: Input, state: State): ZIO[Console, IOException, Boolean] = {
@@ -75,7 +79,7 @@ object Candy extends App {
             se <- UIO.succeed(update(input)(state))
             s: State = se._1
             e: Event = se._2
-            _ <- putStrLn(e.toString)
+            _ <- recordEvent(e)
             _ <- renderState(s)
             loop <- evaluate(input, s)
             _ <- if (loop) processLoop(s) else UIO.succeed(s)
