@@ -49,8 +49,8 @@ object Recommender {
     } yield Recommendations(user.email, user.name, products)
 
   def logic(email: String): ZIO[Console with Writer[String], Error, Recommendations] = for {
-    recs <- tryGettingRecommendationsByEmail(email).ensuring(printLogs)
-    //_ <- printLogs // not reached without ensuring
+    recs <- tryGettingRecommendationsByEmail(email)//.ensuring(printLogs)
+    _ <- printLogs // not reached without ensuring if error
   } yield (recs)
 
   def main(args: Array[String]): Unit = {
@@ -58,7 +58,7 @@ object Recommender {
 
     val runtime = new DefaultRuntime{}
 
-    val zio = for {
+    val program = for {
       w <- Ref.make[Log](Vector[String]())
       live: Console with Writer[String] = new Console.Live with Writer[String] {
         def writer: Ref[Vector[String]] = w
@@ -66,7 +66,7 @@ object Recommender {
       result <- logic(email).provide(live).catchAllCause(c => console.putStrLn("" + c.failures(0)))
     } yield result
 
-    println(s"Recommendations for user $email: " + runtime.unsafeRun(zio))
+    println(s"Recommendations for user $email: " + runtime.unsafeRun(program))
   }
 
 }
