@@ -58,7 +58,7 @@ object Recommender {
 
     val runtime = new DefaultRuntime{}
 
-    val program = for {
+    val zio = for {
       w <- Ref.make[Log](Vector[String]())
       live: Console with Writer[String] = new Console.Live with Writer[String] {
         def writer: Ref[Vector[String]] = w
@@ -66,7 +66,7 @@ object Recommender {
       result <- logic(email).provide(live).catchAllCause(c => console.putStrLn("" + c.failures(0)))
     } yield result
 
-    println(s"Recommendations for user $email: " + runtime.unsafeRun(program))
+    println(s"Recommendations for user $email: " + runtime.unsafeRun(zio))
   }
 
 }
