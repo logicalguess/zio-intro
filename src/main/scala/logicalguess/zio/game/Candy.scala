@@ -12,6 +12,12 @@ object Candy extends App {
     case object Turn extends Input
     case object Exit extends Input
 
+    sealed trait Event
+    case object CoinReceived extends Event
+    case object CandyReleased extends Event
+    case object InputIgnored extends Event
+    case object Exited extends Event
+
     case class State(locked: Boolean, candies: Int, coins: Int)
 
     def run(args: List[String]) : ZIO[Environment, Nothing, Int] = {
@@ -28,16 +34,17 @@ object Candy extends App {
         _ <- processLoop(state)
     } yield()
 
-    def update: Input => State => State = (i: Input) => (s: State) =>
+    def update: Input => State => (State, Event) = (i: Input) => (s: State) =>
         (i, s) match {
-            case (Exit, _) => s
-            case (_, State(_, 0, _)) => s
-            case (Coin, State(false, _, _)) => s
-            case (Turn, State(true, _, _)) => s
+            case (Exit, _) => (s, Exited)
+            case (_, State(_, 0, _)) => (s, InputIgnored)
+            case (Coin, State(false, _, _)) => (s, InputIgnored)
+            case (Turn, State(true, _, _)) => (s, InputIgnored)
             case (Coin, State(true, candy, coin)) =>
-                State(false, candy, coin + 1)
+                (State(false, candy, coin + 1), CoinReceived)
             case (Turn, State(false, candy, coin)) =>
-                State(true, candy - 1, coin)
+                (State(true, candy - 1, coin), CandyReleased)
+            case (_, _) => (s, InputIgnored)
         }
 
     val getInput : ZIO[Console, IOException, Input] = for {
@@ -62,13 +69,16 @@ object Candy extends App {
         }
     }
 
-    def processLoop(state: State) : ZIO[Console, IOException, State] = {
+    def processLoop(state: State) : ZIO[Console, IOException, Unit] = {
         for {
             input <- getInput
-            state <- UIO.succeed(update(input)(state))
-            _ <- renderState(state)
-            loop <- evaluate(input, state)
-            state <- if (loop) processLoop(state) else UIO.succeed(state)
-        } yield state
+            se <- UIO.succeed(update(input)(state))
+            s: State = se._1
+            e: Event = se._2
+            _ <- putStrLn(e.toString)
+            _ <- renderState(s)
+            loop <- evaluate(input, s)
+            _ <- if (loop) processLoop(s) else UIO.succeed(s)
+        } yield ()
     }
 }
