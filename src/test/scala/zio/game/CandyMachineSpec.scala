@@ -12,7 +12,7 @@ class CandyMachineSpec extends FunSpec {
   def simulate(inputs: List[Input])(state: State): (State, Result) = {
     val runtime = new DefaultRuntime{}
     val newState = runtime.unsafeRun(CandyMachine.simulate(inputs)(state))
-    val result = Result(-newState.candies + state.candies, newState.coins - state.coins)
+    val result = Result(state.candies - newState.candies, newState.coins - state.coins)
     (newState, result)
   }
 
