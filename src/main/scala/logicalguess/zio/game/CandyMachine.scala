@@ -2,7 +2,8 @@ package logicalguess.zio.game
 
 import java.io.IOException
 
-import zio.console.{Console, putStrLn, getStrLn}
+import zio.console.{Console, getStrLn, putStrLn}
+import zio.stream.{Sink, Stream}
 import zio.{App, ZIO}
 
 object CandyMachine extends App {
@@ -22,9 +23,14 @@ object CandyMachine extends App {
 
     def run(args: List[String]) : ZIO[Environment, Nothing, Int] = {
         (for {
-            _ <- program
+            _ <- program1
         } yield ())
           .fold(_ => 1, _ => 0)
+    }
+
+    def simulate(inputs: List[Input])(state: State): ZIO[Any, Nothing, State] = {
+        def streamReduce(state: State, input: Input): State = CandyMachine.update(input)(state)._1
+        Stream.fromIterable(inputs).run(Sink.foldLeft(state)(streamReduce))
     }
 
     val program : ZIO[Console, IOException, Unit] = for {
@@ -34,7 +40,15 @@ object CandyMachine extends App {
         _ <- processLoop(state)
     } yield()
 
-    def update: Input => State => (State, Event) = (i: Input) => (s: State) =>
+    val program1 : ZIO[Console, IOException, Unit] = for {
+        _ <- putStrLn(s"Let's test!")
+        start = State(true, 5, 10)
+        state <- simulate(List(Coin, Turn))(start)
+        _ <- renderState(state)
+        _ <- putStrLn("" + state.candies)
+    } yield()
+
+    val update: Input => State => (State, Event) = (i: Input) => (s: State) =>
         (i, s) match {
             case (Exit, _) => (s, Exited)
             case (_, State(_, 0, _)) => (s, InputIgnored)
