@@ -3,9 +3,9 @@ package logicalguess.zio.game
 import java.io.IOException
 
 import zio.console.{Console, putStrLn, getStrLn}
-import zio.{App, IO, UIO, ZIO}
+import zio.{App, ZIO}
 
-object Candy extends App {
+object CandyMachine extends App {
 
     sealed trait Input
     case object Coin extends Input
@@ -51,9 +51,9 @@ object Candy extends App {
         line <- putStrLn(s"Please enter an input from: 'c', 't', or 'x'") *> getStrLn
         char <- line.toLowerCase.trim.headOption match {
             case None => putStrLn(s"You did not enter a character") *> getInput
-            case Some('c') => UIO.succeed(Coin)
-            case Some('t') => UIO.succeed(Turn)
-            case Some('x') => UIO.succeed(Exit)
+            case Some('c') => ZIO.succeed(Coin)
+            case Some('t') => ZIO.succeed(Turn)
+            case Some('x') => ZIO.succeed(Exit)
             case _ => putStrLn(s"Input not recognized. Valid inputs are: 'c', 't', or 'x'") *> getInput
         }
     } yield char
@@ -69,20 +69,20 @@ object Candy extends App {
     def evaluate(in: Input, state: State): ZIO[Console, IOException, Boolean] = {
         in match {
             case Exit => putStrLn(s"Good bye!").as(false)
-            case _ => IO.succeed(true)
+            case _ => ZIO.succeed(true)
         }
     }
 
     def processLoop(state: State) : ZIO[Console, IOException, Unit] = {
         for {
             input <- getInput
-            se <- UIO.succeed(update(input)(state))
+            se <- ZIO.succeed(update(input)(state))
             s: State = se._1
             e: Event = se._2
             _ <- recordEvent(e)
             _ <- renderState(s)
             loop <- evaluate(input, s)
-            _ <- if (loop) processLoop(s) else UIO.succeed(s)
+            _ <- if (loop) processLoop(s) else ZIO.succeed(s)
         } yield ()
     }
 }
